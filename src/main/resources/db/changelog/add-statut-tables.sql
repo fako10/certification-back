@@ -1,0 +1,1 @@
+alter table user_Examen add column statut VARCHAR(255);
