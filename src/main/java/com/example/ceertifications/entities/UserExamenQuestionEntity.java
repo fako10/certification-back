@@ -27,6 +27,9 @@ public class UserExamenQuestionEntity {
     )
     private long id;
 
+    @Column(name = "reponse_correcte")
+    private boolean reponseCorrecte;
+
     @ManyToOne
     @JoinColumn(name="user_Examen_id", nullable=false)
     private UserExamen userExamen;

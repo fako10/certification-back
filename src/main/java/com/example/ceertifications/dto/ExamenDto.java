@@ -7,8 +7,9 @@ import java.util.List;
 @Data
 public class ExamenDto {
 
-    Long examen;
-    List<ReponseQuestionDto> reponseQuestionDtos;
-    Long utilisateur;
+    Long id;
+    String libelle;
+    String description;
+    String certification;
 
 }

@@ -1,0 +1,1 @@
+ALTER table user_examen_question add column reponse_correcte boolean

@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.util.List;
 
-
 @Data
 public class QuestionDto {
 
@@ -16,5 +15,6 @@ public class QuestionDto {
     private String typeReponse;
     private Long examen;
     List<ReponseDto> reponses;
+    private Boolean isCorrecte;
 
 }

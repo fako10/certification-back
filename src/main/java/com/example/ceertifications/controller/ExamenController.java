@@ -1,6 +1,7 @@
 package com.example.ceertifications.controller;
 
 import com.example.ceertifications.dto.ExamenDto;
+import com.example.ceertifications.dto.ExamenGroupDto;
 import com.example.ceertifications.dto.UserExamenDto;
 import com.example.ceertifications.entities.Certification;
 import com.example.ceertifications.entities.Examen;
@@ -33,8 +34,25 @@ public class ExamenController {
 
     @GetMapping("/examens/{id}")
     //@PreAuthorize("hasRole('USER')  or hasRole('ADMIN')")
-    public List<Examen> getExamenByCertificationId(@PathVariable Long id) {
+    public List<ExamenDto> getExamenByCertificationId(@PathVariable Long id) {
         return examenService.getExamenByCertificationId(id);
+    }
+
+    @GetMapping("/userExamen/{id}")
+    //@PreAuthorize("hasRole('USER')  or hasRole('ADMIN')")
+    public UserExamenDto getUserExamenById(@PathVariable Long id) {
+        return examenService.getUserExamen(id);
+    }
+
+    @GetMapping("/examen/{id}")
+    //@PreAuthorize("hasRole('USER')  or hasRole('ADMIN')")
+    public ExamenDto getExamenById(@PathVariable Long id) {
+        return examenService.getExamenById(id);
+    }
+
+    @GetMapping("/examengroups/{id}")
+    public List<ExamenGroupDto> getExamenGroupByCertificationId(@PathVariable Long id) {
+        return examenService.getExamenGroupByCertificationId(id);
     }
 
     @GetMapping("/examens/create-user-examen/{id}")

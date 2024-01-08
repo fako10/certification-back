@@ -1,3 +1,5 @@
+drop table if exists user_examen_question;
+drop table if exists user_examen_reponse;
 CREATE TABLE user_examen_question
 (
     id               BIGINT primary key,
@@ -17,5 +19,10 @@ id                               BIGINT primary key,
     FOREIGN KEY(reponse_id) REFERENCES reponse(id)
 );
 
+drop SEQUENCE user_examen_question_sequence;
+drop sequence user_examen_reponse_sequence;
 CREATE SEQUENCE user_examen_question_sequence START 1;
 CREATE SEQUENCE user_examen_reponse_sequence START 1;
+
+alter table user_examen add column nbre_questions BIGINT;
+

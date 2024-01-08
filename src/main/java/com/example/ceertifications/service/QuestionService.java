@@ -16,12 +16,12 @@ import java.util.List;
 public class QuestionService {
 
     private ExamenRepository examenRepository;
-    public List<ReponseQuestionDto> getQuestionReponseByExamen(Long id){
+    /*public List<ReponseQuestionDto> getQuestionReponseByExamen(Long id){
         Examen examenEntity = examenRepository.findById(id).orElse(new Examen());
         ExamenDto examenDto = new ExamenDto();
         examenDto.setExamen(examenEntity.getId());
         //examenDto.setExamen(examenEntity.getQuestionEntities().stream().map(x-> x.getReponseEntity()).map(x->ReponseQuestionMapper.toDto(x)).collect(Collectors.toList()));
         return examenDto.getReponseQuestionDtos();
-    }
+    }*/
 
 }
