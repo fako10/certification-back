@@ -2,6 +2,7 @@ package com.example.ceertifications.controller;
 
 import com.example.ceertifications.entities.UserRole;
 import com.example.ceertifications.entities.Users;
+import com.example.ceertifications.payload.request.EmailValidationRequest;
 import com.example.ceertifications.payload.request.LoginRequest;
 import com.example.ceertifications.payload.request.SignupRequest;
 import com.example.ceertifications.payload.response.JwtResponse;
@@ -9,6 +10,7 @@ import com.example.ceertifications.payload.response.MessageResponse;
 import com.example.ceertifications.repositories.UserRepository;
 import com.example.ceertifications.security.jwt.JwtUtils;
 import com.example.ceertifications.security.service.UserDetailsImpl;
+import com.example.ceertifications.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,6 +41,7 @@ public class AuthController {
     UserRepository userRepository;
     PasswordEncoder encoder;
     JwtUtils jwtUtils;
+    UserService userService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest) {
@@ -49,11 +54,13 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles));
+                roles,
+                userDetails.isLocked()));
     }
 
     @PostMapping("/signup")
@@ -79,8 +86,49 @@ public class AuthController {
         else{
             user.setUserRole(UserRole.valueOf(strRoles.stream().findFirst().get()));
         }
-        userRepository.save(user);
+        try {
+            String validationCode = userService.generateRandomAlphanumericString();
+            //userService.sendEmail(user.getEmail(), validationCode);
+            user.setLocked(true);
+            user.setValidationcode(validationCode);
+            userRepository.save(user);
+            //} catch (MessagingException | UnsupportedEncodingException e) {
+        } catch(Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: invalid email adress!"));
+        }
+
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @PostMapping("/emailvalidation")
+    public ResponseEntity<?> registerUser( @RequestBody EmailValidationRequest emailValidationRequest) {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(emailValidationRequest.getUsername(), emailValidationRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Users user = userRepository.findByUsername(emailValidationRequest.getUsername()).orElse(null);
+        if(emailValidationRequest.getValidationCode().equals(user.getValidationcode())) {
+            user.setLocked(false);
+            userRepository.save(user);
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    roles,
+                    userDetails.isLocked()));
+        } else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: invalid validation code!"));
+        }
     }
 }

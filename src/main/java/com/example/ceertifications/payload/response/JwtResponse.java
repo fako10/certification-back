@@ -1,6 +1,5 @@
 package com.example.ceertifications.payload.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,13 +16,15 @@ public class JwtResponse {
     private String username;
     private String email;
     private List<String> roles;
+    private boolean locked;
 
-    public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles) {
+    public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles, boolean locked) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
         this.email = email;
         this.roles = roles;
+        this.locked = locked;
     }
 
     public String getAccessToken() {

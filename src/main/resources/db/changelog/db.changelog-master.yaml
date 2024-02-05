@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/add-create_userExamenQuestioneponse.sql
   - include:
       file: db/changelog/update-user-examen-question.sql
+  - include:
+      file: db/changelog/add-validation-code.sql
