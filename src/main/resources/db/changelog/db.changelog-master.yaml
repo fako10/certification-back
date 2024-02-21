@@ -1,7 +1,7 @@
 databaseChangeLog:
   - include:
       file: db/changelog/create-tables.sql
-  - include:
+  - include:alter table user_examen add column nbre_questions
       file: db/changelog/update-question-tables.sql
   - include:
       file: db/changelog/update-users.sql

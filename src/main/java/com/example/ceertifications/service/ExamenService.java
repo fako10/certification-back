@@ -103,6 +103,13 @@ public class ExamenService {
     private void finalizeSaveUserExamen(UserExamenDto userExamenDto) {
         UserExamen userExamen = userExamenRepository.findById(userExamenDto.getId());
         userExamen.setStatut(UserExamenStatut.Termine);
+        userExamen.setNbrQuestions(userExamenDto.getQuestions().size());
+        userExamen.setNbrQuestionsCorrectes(userExamenDto.getQuestions().stream().filter(x->x.isCorrecte()).collect(Collectors.toList()).size());
+        if(userExamen.getNbrQuestionsCorrectes()* 100/ userExamen.getNbrQuestions() >= userExamen.getExamen().getPourcentage()){
+            userExamen.setResultat(true);
+        } else {
+            userExamen.setResultat(false);
+        }
         userExamenRepository.save(userExamen);
     }
 

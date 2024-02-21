@@ -11,5 +11,6 @@ public class ExamenDto {
     String libelle;
     String description;
     String certification;
+    int pourcentage;
 
 }

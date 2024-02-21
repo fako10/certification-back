@@ -1,52 +1,52 @@
 package com.example.ceertifications.entities;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "examen")
-public class Examen {
-
+@Table(name = "payement")
+public class Payement {
     @SequenceGenerator(
-            name = "examen_sequence",
-            sequenceName = "examen_sequence",
+            name = "payement_sequence",
+            sequenceName = "payement_sequence",
             allocationSize = 1
     )
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "examen_sequence"
+            generator = "payement_sequence"
     )
     private long id;
+
     private String libelle;
-    private String description;
-    @Column(name = "pourcentage_reussite")
-    private Integer pourcentage;
-    private Integer duree;
     @ManyToOne
     @JoinColumn(name="certification_id", nullable=false)
     private Certification certificationEntity;
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable=false)
+    private Users userEntity;
+    private String currency;
+    @Column(name = "successurl")
+    private String successUrl;
+    @Column(name = "cancelurl")
+    private String cancelUrl;
+    @Column(name = "payement_date")
+    private LocalDateTime payementDate;
+    private float amount;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "examen")
-    private Set<QuestionEntity> questionEntities = new HashSet<>();
 }

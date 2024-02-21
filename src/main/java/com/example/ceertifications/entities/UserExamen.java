@@ -59,7 +59,13 @@ public class UserExamen {
     private UserExamenStatut statut;
 
     @Column(name = "resultat")
-    private int resultat;
+    private Boolean resultat;
+
+    @Column(name = "nbre_questions")
+    private Integer nbrQuestions;
+
+    @Column(name = "nbre_questions_correcte")
+    private Integer nbrQuestionsCorrectes;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userExamen")
     private Set<ReponseQuestionsEntity> reponseQuestionEntities = new HashSet<>();

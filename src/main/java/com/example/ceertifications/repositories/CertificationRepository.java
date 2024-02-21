@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface CertificationRepository extends JpaRepository<Certification,Long> {
 
     Optional<Certification> findById(Long id);
+    Optional<Certification> findCertificationByLibelle(String libelle);
 }

@@ -1,7 +1,11 @@
 package com.example.ceertifications.service;
 
+import com.example.ceertifications.dto.enums.EmailSubject;
 import com.example.ceertifications.security.SmtpAuthenticator;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Authenticator;
@@ -21,23 +25,33 @@ import java.util.Random;
 @AllArgsConstructor
 public class UserService {
 
-    public void sendEmail(String toEmail, String validationCode) throws MessagingException, UnsupportedEncodingException {
+
+
+
+    public void sendEmail(String toEmail, String validationCode, EmailSubject emailSubject) throws MessagingException, UnsupportedEncodingException {
         try
         {
-            String smtpHostServer = "smtp.gmail.com";
-            String emailID = "ngadene@gmail.com";
+            //String smtpHostServer = "smtp.gmail.com";
+            String smtpHostServer = "mail.sipcca.com";
 
-            String body = "Your email validation cide is" + validationCode;
-            String subject = "email validation code";
 
-            final String fromEmail = "ngadene11@gmail.com"; //requires valid gmail id
-            final String password = "Rivaldo@10"; // correct password for gmail id
+
+            String body = emailSubject.subject + validationCode;
+            String subject = emailSubject.body;
+
+            //final String fromEmail = "ngadene11@gmail.com"; //requires valid gmail id
+            //final String password = "Rivaldo@10"; // correct password for gmail id
+
+            final String fromEmail = "info@sipcca.com";
+            final String password = "dEM[wB]z;WyA";
 
             Properties props = new Properties();
             props.put("mail.smtp.host", smtpHostServer); //SMTP Host
-            props.put("mail.smtp.port", "587"); //TLS Port
+            //props.put("mail.smtp.port", "587"); //TLS Port
+            props.put("mail.smtp.port", "465"); //TLS Port
             props.put("mail.smtp.auth", "true"); //enable authentication
             props.put("mail.smtp.starttls.enable", "true"); //enable STARTTLS
+            props.put("mail.smtp.ssl.enable", "true");
 
             //create Authenticator object to pass in Session.getInstance argument
             Authenticator auth = new Authenticator() {
@@ -48,7 +62,8 @@ public class UserService {
             };
 
             SmtpAuthenticator authentication = new SmtpAuthenticator();
-            Session session = Session.getInstance(props, authentication);
+            Session session = Session.getInstance(props, auth);
+
 
             MimeMessage msg = new MimeMessage(session);
             //set message headers
@@ -56,9 +71,10 @@ public class UserService {
             msg.addHeader("format", "flowed");
             msg.addHeader("Content-Transfer-Encoding", "8bit");
 
-            msg.setFrom(new InternetAddress("ngadene@gmail.com", "NoReply-JD"));
+            msg.setFrom(new InternetAddress(fromEmail, "NoReply-JD"));
 
-            msg.setReplyTo(InternetAddress.parse("ngadene@gmail.com", false));
+            msg.setReplyTo(InternetAddress.parse(fromEmail, false));
+
 
             msg.setSubject(subject, "UTF-8");
 

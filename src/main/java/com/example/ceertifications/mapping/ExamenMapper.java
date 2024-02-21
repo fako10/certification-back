@@ -12,6 +12,7 @@ public class ExamenMapper {
         entity.setDescription(dto.getDescription());
         entity.setId(dto.getId());
         entity.setLibelle(dto.getLibelle());
+        entity.setPourcentage(dto.getPourcentage());
         return entity;
     }
 
@@ -21,6 +22,7 @@ public class ExamenMapper {
         dto.setDescription(entity.getDescription());
         dto.setLibelle(entity.getLibelle());
         dto.setCertification(entity.getCertificationEntity().getLibelle());
+        dto.setPourcentage(entity.getPourcentage());
         return dto;
     }
 }

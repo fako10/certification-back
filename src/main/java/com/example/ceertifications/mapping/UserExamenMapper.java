@@ -30,11 +30,21 @@ public final class UserExamenMapper {
         List<QuestionDto> questionDtos = new ArrayList<>();
         for(UserExamenQuestionEntity userExamenQuestionEntity : entity.getQuestions()) {
             QuestionDto questionDto = UserExamenMapper.mapUserExamenQuestionToQuestionDto(userExamenQuestionEntity);
-            questionDto.setIsCorrecte(userExamenQuestionEntity.isReponseCorrecte());
+            questionDto.setCorrecte(userExamenQuestionEntity.isReponseCorrecte());
             questionDtos.add(questionDto);
         }
         dto.setQuestions(questionDtos);
+        dto.setNbrQuestions(entity.getNbrQuestions());
+        dto.setNbrQuestionsCorrectes(entity.getNbrQuestionsCorrectes());
+        dto.setResultat(entity.getResultat());
+        dto.setLibelleExamen(entity.getExamen().getLibelle());
+        dto.setLibelleCertification(entity.getExamen().getCertificationEntity().getLibelle());
+        dto.setDuree(entity.getExamen().getDuree());
         //dto.setQuestions(entity.getQuestions().stream().map(x->mapUserExamenQuestionToQuestionDto(x)).collect(Collectors.toList()));
+        if(dto.getNbrQuestions() != null && dto.getNbrQuestionsCorrectes() != null) {
+            long pourcentage = (dto.getNbrQuestionsCorrectes() * 100) / dto.getNbrQuestions();
+            dto.setPourcentage(pourcentage);
+        }
         return dto;
     }
 

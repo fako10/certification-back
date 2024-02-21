@@ -31,6 +31,7 @@ public class Certification {
     private long id;
     private String libelle;
     private String description;
+    private Float amount;
     /*@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "certificationEntity")
     private Set<Examen> examenEntities = new HashSet<>();*/
 }

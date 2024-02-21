@@ -1,5 +1,7 @@
 package com.example.ceertifications.controller;
 
+import com.example.ceertifications.dto.ExamenGroupDto;
+import com.example.ceertifications.dto.enums.EmailSubject;
 import com.example.ceertifications.entities.UserRole;
 import com.example.ceertifications.entities.Users;
 import com.example.ceertifications.payload.request.EmailValidationRequest;
@@ -19,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,7 +92,10 @@ public class AuthController {
         }
         try {
             String validationCode = userService.generateRandomAlphanumericString();
-            //userService.sendEmail(user.getEmail(), validationCode);
+            String mailBody = "Votre code de confirmation est le : " + validationCode;
+            String subject = "Code de validation";
+            //userService.sendEmail(user.getEmail(), subject, mailBody);
+            userService.sendEmail(user.getEmail(), validationCode, EmailSubject.VALIDATION_CODE);
             user.setLocked(true);
             user.setValidationcode(validationCode);
             userRepository.save(user);
@@ -130,5 +137,27 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponse("Error: invalid validation code!"));
         }
+    }
+
+    @PostMapping("/changepwd")
+    public ResponseEntity<?> getExamenGroupByCertificationId(@RequestBody String userEmail) throws UnsupportedEncodingException, MessagingException {
+        if (!userRepository.existsByEmail(userEmail)) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: there is no account with this email!"));
+        } else {
+            Users user = userRepository.findByEmail(userEmail).orElse(null);
+            if(user != null) {
+                String generatedPwd = userService.generateRandomAlphanumericString();
+                userService.sendEmail(userEmail, generatedPwd, EmailSubject.CHANGE_PWD);
+                return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+
+            } else {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: there is no account with this email!"));
+            }
+        }
+
     }
 }
